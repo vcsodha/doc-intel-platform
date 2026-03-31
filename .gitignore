@@ -1,0 +1,22 @@
+# Java / Maven
+**/target/
+**/*.class
+.classpath
+.project
+.settings/
+
+# Python
+**/__pycache__/
+**/*.py[cod]
+.venv/
+.env
+
+# Go
+go-gateway/go-gateway
+**/bin/
+
+# Infrastructure & OS
+shared_data/*
+!shared_data/.gitkeep
+.DS_Store
+node_modules/

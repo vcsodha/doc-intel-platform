@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Document Intelligence</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-900 text-white font-sans min-h-screen p-8">
+
+    <div class="max-w-6xl mx-auto">
+        <header class="mb-10 text-center">
+            <h1 class="text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-purple-500">
+                Distributed AI Document Intelligence
+            </h1>
+            <p class="text-gray-400 mt-2">Polyglot Microservices Pipeline (Go, Python, Java, Redis, Ollama)</p>
+        </header>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div class="col-span-1 bg-gray-800 p-6 rounded-xl border border-gray-700 shadow-lg">
+                <h2 class="text-xl font-semibold mb-4 text-blue-400">1. Ingest Document</h2>
+                <div class="border-2 border-dashed border-gray-600 rounded-lg p-8 text-center hover:border-blue-500 transition-colors">
+                    <input type="file" id="fileInput" class="hidden" accept=".jpg,.jpeg,.png,.txt">
+                    <label for="fileInput" class="cursor-pointer text-gray-300 flex flex-col items-center">
+                        <svg class="w-12 h-12 mb-3 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path></svg>
+                        <span class="font-medium">Click to upload receipt</span>
+                        <span class="text-sm text-gray-500 mt-1">JPG, PNG, TXT</span>
+                    </label>
+                </div>
+                <button onclick="uploadDocument()" id="uploadBtn" class="w-full mt-4 bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded transition-colors disabled:opacity-50">
+                    Process with AI Pipeline
+                </button>
+                <p id="uploadStatus" class="mt-3 text-sm text-center text-gray-400"></p>
+            </div>
+
+            <div class="col-span-2 bg-gray-800 p-6 rounded-xl border border-gray-700 shadow-lg">
+                <div class="flex justify-between items-center mb-4">
+                    <h2 class="text-xl font-semibold text-purple-400">2. Structured Database Output</h2>
+                    <button onclick="fetchDocuments()" class="text-sm bg-gray-700 hover:bg-gray-600 px-3 py-1 rounded text-gray-300 transition-colors">↻ Refresh</button>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse">
+                        <thead>
+                            <tr class="border-b border-gray-700 text-gray-400 text-sm">
+                                <th class="pb-3 px-2">ID</th>
+                                <th class="pb-3 px-2">Vendor Name</th>
+                                <th class="pb-3 px-2">Total Amount</th>
+                                <th class="pb-3 px-2">Date</th>
+                                <th class="pb-3 px-2">Raw File</th>
+                            </tr>
+                        </thead>
+                        <tbody id="resultsTable" class="text-sm">
+                            </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 1. Send file to Go API
+        async function uploadDocument() {
+            const fileInput = document.getElementById('fileInput');
+            const statusText = document.getElementById('uploadStatus');
+            const btn = document.getElementById('uploadBtn');
+
+            if (fileInput.files.length === 0) {
+                statusText.innerText = "⚠️ Please select a file first.";
+                return;
+            }
+
+            const formData = new FormData();
+            formData.append("document", fileInput.files[0]);
+
+            btn.disabled = true;
+            statusText.innerHTML = "⏳ Sending to Go Gateway...";
+
+            try {
+                // Hitting your Go Gateway on port 8080
+                const response = await fetch('http://localhost:8080/api/v1/upload', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                if (response.ok) {
+                    statusText.innerHTML = "✅ Queued in Redis! AI is processing...";
+                    setTimeout(fetchDocuments, 4000); // Wait 4 seconds for AI, then refresh table
+                } else {
+                    statusText.innerHTML = "❌ Upload failed.";
+                }
+            } catch (error) {
+                statusText.innerHTML = "❌ Network error. Is the backend running?";
+                console.error(error);
+            }
+            btn.disabled = false;
+        }
+
+        // 2. Fetch results from Java API
+        async function fetchDocuments() {
+            const tbody = document.getElementById('resultsTable');
+            tbody.innerHTML = '<tr><td colspan="5" class="py-4 text-center text-gray-500">Loading from PostgreSQL...</td></tr>';
+
+            try {
+                // Hitting your Java Spring Boot API on port 8081
+                const response = await fetch('http://localhost:8081/api/v1/documents');
+                const data = await response.json();
+                
+                tbody.innerHTML = '';
+                
+                // Reverse loop to show newest first
+                for (let i = data.length - 1; i >= 0; i--) {
+                    const doc = data[i];
+                    // Safely parse the AI JSON payload
+                    let aiData = {};
+                    try { aiData = JSON.parse(doc.structuredData); } catch(e) {}
+
+                    tbody.innerHTML += `
+                        <tr class="border-b border-gray-700/50 hover:bg-gray-700/20">
+                            <td class="py-3 px-2 text-gray-400">#${doc.id}</td>
+                            <td class="py-3 px-2 font-medium text-blue-300">${aiData.vendor_name || 'N/A'}</td>
+                            <td class="py-3 px-2 text-green-400 font-mono">${aiData.total_amount || 'N/A'}</td>
+                            <td class="py-3 px-2 text-yellow-200">${aiData.date || 'N/A'}</td>
+                            <td class="py-3 px-2 text-gray-500 text-xs truncate max-w-[150px]" title="${doc.filename}">${doc.filename}</td>
+                        </tr>
+                    `;
+                }
+            } catch (error) {
+                tbody.innerHTML = '<tr><td colspan="5" class="py-4 text-center text-red-400">Failed to connect to Java API.</td></tr>';
+                console.error(error);
+            }
+        }
+
+        // Load table on startup
+        fetchDocuments();
+    </script>
+</body>
+</html>
