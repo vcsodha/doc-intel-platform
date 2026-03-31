@@ -35,35 +35,36 @@ doc-intel-platform/
 ```
 
 ## 🛠 Tech Stack
-Frontend
 
-HTML5 / Vanilla JavaScript
+### Frontend
 
-Tailwind CSS
+* HTML5 / Vanilla JavaScript
 
-Backend Microservices
+* Tailwind CSS
 
-Go (Ingestion Gateway)
+### Backend Microservices
 
-Python (AI Processing Worker)
+* Go (Ingestion Gateway)
 
-Java / Spring Boot (Analytics API)
+* Python (AI Processing Worker)
 
-AI & Data Engineering
+* Java / Spring Boot (Analytics API)
 
-Ollama (LLaVA Vision Model)
+### AI & Data Engineering
 
-OpenCV (Image Preprocessing)
+* Ollama (LLaVA Vision Model)
 
-Redis (Message Broker / Queue)
+* OpenCV (Image Preprocessing)
 
-PostgreSQL (Relational Database)
+* Redis (Message Broker / Queue)
 
-DevOps
+* PostgreSQL (Relational Database)
 
-Docker
+### DevOps
 
-Docker Compose
+* Docker
+
+* Docker Compose
 
 ## 🎯 Project Motivation
 
@@ -76,6 +77,7 @@ Design decoupled, event-driven backend systems
 Work with state-of-the-art local multimodal LLMs (Vision AI)
 
 Practice full-stack integration from file upload to data visualization
+
 
 ## ⚙️ Core Components
 
@@ -129,11 +131,11 @@ Open dashboard.html in your web browser to upload receipts and watch the data fl
 
 ## 🔮 Roadmap
 
-🛡️ Implement a Dead Letter Queue (DLQ) in Redis for failed image processing
+* 🛡️ Implement a Dead Letter Queue (DLQ) in Redis for failed image processing
 
-🔄 Add Server-Sent Events (SSE) to the dashboard for live table updates without refreshing
+* 🔄 Add Server-Sent Events (SSE) to the dashboard for live table updates without refreshing
 
-⚙️ Create a GitHub Actions CI/CD pipeline for automated testing
+* ⚙️ Create a GitHub Actions CI/CD pipeline for automated testing
 
 ## 📸 Screenshot
 
