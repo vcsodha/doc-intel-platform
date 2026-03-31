@@ -32,8 +32,9 @@ doc-intel-platform/
 |--- spring-analytics/  # Java Spring Boot API for data retrieval
 |--- dashboard.html     # Vanilla JS & Tailwind UI
 |--- docker-compose.yml # Infrastructure orchestration
+```
 
-🛠 Tech Stack
+## 🛠 Tech Stack
 Frontend
 
 HTML5 / Vanilla JavaScript
@@ -64,7 +65,8 @@ Docker
 
 Docker Compose
 
-🎯 Project Motivation
+## 🎯 Project Motivation
+
 This project was built to:
 
 Learn how to architect and orchestrate a polyglot microservices mesh
@@ -75,52 +77,73 @@ Work with state-of-the-art local multimodal LLMs (Vision AI)
 
 Practice full-stack integration from file upload to data visualization
 
-⚙️ Core Components
+## ⚙️ Core Components
+
 1️⃣ Ingestion Gateway (Go)
+
 Accepts multipart file uploads, writes the raw file to a shared Docker volume, and pushes a task UUID to the Redis queue. Returns an immediate 202 Accepted to the client.
 
 2️⃣ Message Broker (Redis)
+
 Acts as the asynchronous buffer, decoupling the fast web gateway from the slower, resource-intensive AI processing worker.
 
 3️⃣ AI Processing Worker (Python)
+
 Constantly polls Redis for new tasks. Uses OpenCV to clean the image, prompts the local LLaVA model to extract a strict JSON payload (Vendor, Total, Date), and inserts the result into PostgreSQL.
 
 4️⃣ Analytics API (Java)
+
 Serves the structured database records via a clean REST endpoint to be consumed by the frontend dashboard.
 
-🚀 Getting Started (Local)
+
+## 🚀 Getting Started (Local)
+
 1️⃣ Install and Start Ollama
+
 Ensure Ollama is installed on your host machine.
 
 Bash
 ollama serve
+
 2️⃣ Download the Vision Model
 
-Bash
+```
 ollama pull llava
+```
+
 3️⃣ Clone the repository
 
-Bash
-git clone [https://github.com/vcsodha/doc-intel-platform.git](https://github.com/vcsodha/doc-intel-platform.git)
-cd doc-intel-platform
+```
+git clone https://github.com/vcsodha/doc-intel-platform.git
+```
+
 4️⃣ Spin up the infrastructure
 
-Bash
+```
 docker compose up -d --build
+```
+
 5️⃣ Open the Dashboard
+
 Open dashboard.html in your web browser to upload receipts and watch the data flow.
 
-🔮 Roadmap
+## 🔮 Roadmap
+
 🛡️ Implement a Dead Letter Queue (DLQ) in Redis for failed image processing
 
 🔄 Add Server-Sent Events (SSE) to the dashboard for live table updates without refreshing
 
 ⚙️ Create a GitHub Actions CI/CD pipeline for automated testing
 
-📸 Screenshot
-(Add a screenshot of your dark-mode dashboard with the successfully extracted receipt data here)
+## 📸 Screenshot
 
-🧑‍💻 Author
+<img width="500" height="500" alt="Screenshot 2026-03-31 at 13 29 47" src="https://github.com/user-attachments/assets/d667bb15-63c2-4992-b769-55e1964bd779" />
+
+
+## 🧑‍💻 Author
+
 Vidisha Sodha
+
 Software Engineer • AI Engineer
+
 Built as a hands-on project exploring distributed systems, AI integration, and enterprise backend architecture.
