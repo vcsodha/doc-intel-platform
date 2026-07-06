@@ -1,6 +1,4 @@
-redis==5.0.1
+redis==5.0.4
 psycopg2-binary==2.9.9
-opencv-python-headless==4.8.1.78
-requests==2.31.0
-numpy<2.0.0
-
+requests==2.32.3
+opencv-python-headless==4.10.0.84
