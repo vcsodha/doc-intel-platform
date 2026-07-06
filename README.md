@@ -1,5 +1,8 @@
 # 📄 Distributed AI Document Intelligence
 
+![CI](https://github.com/vcsodha/doc-intel-platform/actions/workflows/ci.yml/badge.svg)
+
+
 A polyglot, event-driven microservices architecture built to ingest unstructured document images and use a local Vision AI model to extract structured financial data.
 It features a decoupled ingestion gateway, a persistent message queue, and a reactive frontend dashboard.
 
