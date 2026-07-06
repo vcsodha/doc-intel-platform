@@ -1,0 +1,50 @@
+name: CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  go-gateway:
+    name: Go Gateway (build + vet)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version: '1.22'
+      - name: Build and vet
+        working-directory: go-gateway
+        run: |
+          go build ./...
+          go vet ./...
+
+  python-worker:
+    name: Python Worker (unit tests)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r python-worker/requirements.txt pytest
+      - name: Run unit tests
+        run: pytest python-worker/tests -q
+
+  spring-analytics:
+    name: Spring Analytics (build)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - name: Build
+        working-directory: spring-analytics
+        run: mvn -q -B clean package -DskipTests
